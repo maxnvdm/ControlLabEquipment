@@ -18,58 +18,63 @@ psu = rm.open_resource('ASRL4::INSTR')
 psu.read_termination = '\n'
 psu.write_termination = '\n'
 psu.baud_rate = 115200
-psu.write(':SOURce1:VOLTage '+str(voltage))
+psu.write(':SOURce1:VOLTage ' + str(voltage))
 
 duration = 5
+
+
 def readings(duration, arr):
-    for x in range (duration):
+    for x in range(duration):
         time.sleep(1)
-        voltReadings = psu.query(':MEASure:VOLTage:ALL?')
-        voltReadings = voltReadings.split(',')
-        v1 = voltReadings[0]
-        v2 = voltReadings[1]
-        currReadings = psu.query(':MEASure:CURRent:ALL?')
-        currReadings = currReadings.split(',')
-        c1 = currReadings[0]
-        c2 = currReadings[1]
-        powReadings = psu.query(':MEASure:POWEr:ALL?')
-        powReadings = powReadings.split(',')
-        p1 = powReadings[0]
-        p2 = powReadings[1]
-        timestamp = time.time() + 2082844800 # Using MAC timestamp epoch to be in the same format as labview
+        volt_readings = psu.query(':MEASure:VOLTage:ALL?')
+        volt_readings = volt_readings.split(',')
+        v1 = volt_readings[0]
+        v2 = volt_readings[1]
+        curr_readings = psu.query(':MEASure:CURRent:ALL?')
+        curr_readings = curr_readings.split(',')
+        c1 = curr_readings[0]
+        c2 = curr_readings[1]
+        pow_readings = psu.query(':MEASure:POWEr:ALL?')
+        pow_readings = pow_readings.split(',')
+        p1 = pow_readings[0]
+        p2 = pow_readings[1]
+        timestamp = time.time() + 2082844800  # Using MAC timestamp epoch to be in the same format as labview
         row = np.array([timestamp, v1, v2, c1, c2, p1, p2])
         arr = np.append(arr, [row], axis=0)
         print(arr)
     return arr
 
-def loopReading(arr):
+
+def loop_reading(arr):
     try:
         while True:
             time.sleep(1)
-            voltReadings = psu.query(':MEASure:VOLTage:ALL?')
-            voltReadings = voltReadings.split(',')
-            v1 = voltReadings[0]
-            v2 = voltReadings[1]
-            currReadings = psu.query(':MEASure:CURRent:ALL?')
-            currReadings = currReadings.split(',')
-            c1 = currReadings[0]
-            c2 = currReadings[1]
-            powReadings = psu.query(':MEASure:POWEr:ALL?')
-            powReadings = powReadings.split(',')
-            p1 = powReadings[0]
-            p2 = powReadings[1]
-            timestamp = time.time() + 2082844800 # Using MAC timestamp epoch to be in the same format as labview
+            volt_readings = psu.query(':MEASure:VOLTage:ALL?')
+            volt_readings = volt_readings.split(',')
+            v1 = volt_readings[0]
+            v2 = volt_readings[1]
+            curr_readings = psu.query(':MEASure:CURRent:ALL?')
+            curr_readings = curr_readings.split(',')
+            c1 = curr_readings[0]
+            c2 = curr_readings[1]
+            pow_readings = psu.query(':MEASure:POWEr:ALL?')
+            pow_readings = pow_readings.split(',')
+            p1 = pow_readings[0]
+            p2 = pow_readings[1]
+            timestamp = time.time() + 2082844800  # Using MAC timestamp epoch to be in the same format as labview
             row = np.array([timestamp, v1, v2, c1, c2, p1, p2])
             arr = np.append(arr, [row], axis=0)
             print(arr)
     except KeyboardInterrupt:
         return arr
+
+
 # lpgbt 1.027 to 1.036 DESY
 # manual max is 1.32, min is 1.08
-dataOut = loopReading(data)
+dataOut = loop_reading(data)
 # dataOut = loopReading(data)
 # # Write data to csv file
 # with open('lpGBTtest0.csv', mode='w') as test_file:
 #     writer = csv.writer(test_file, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
 # pd.DataFrame(dataOut).to_csv('readings'+str(duration)+'.csv')
-pd.DataFrame(dataOut).to_csv('readings'+str(voltage)+'.csv')
+pd.DataFrame(dataOut).to_csv('psuData\\readings' + str(voltage) + '.csv')
