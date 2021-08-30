@@ -10,7 +10,7 @@ osc = rm.open_resource('TCPIP0::137.158.93.119::inst0::INSTR')
 testStartTime = time.strftime("%H:%M:%S", time.localtime())
 data = np.array([('Timestamp', 'Offset', 'Ch1 reading', 'Ch2 reading', 'AFG frequency', 'AFG amplitude')])
 
-frequency = 7000
+frequency = 5000
 # preset waveforms: sine, square, ramp, noise, DC, etc...
 waveform = "SINE"
 offset = 1.2
@@ -53,14 +53,14 @@ def record_duration(duration, arr):
 def loop_infinite(arr):
     try:
         while True:
-            osc.write('DVM:SOUrce CH1')
+            osc.write('DVM:SOUrce CH3')
             time.sleep(1.25)
             timestamp1 = time.time() + 2082844800
             ch1 = float(osc.query('DVM:MEASU:VAL?'))
             # row1 = np.array([round(timestamp1, 2), 'CH1', ch1])
 
             # time.sleep(0.3)
-            osc.write('DVM:SOUrce CH2')
+            osc.write('DVM:SOUrce CH3')
             time.sleep(1.25)
             # timestamp2 = time.time() + 2082844800
             ch2 = float(osc.query('DVM:MEASU:VAL?'))
