@@ -77,4 +77,4 @@ dataOut = loop_reading(data)
 # with open('lpGBTtest0.csv', mode='w') as test_file:
 #     writer = csv.writer(test_file, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
 # pd.DataFrame(dataOut).to_csv('readings'+str(duration)+'.csv')
-pd.DataFrame(dataOut).to_csv('psuData\\readings' + str(testStartTime) + '.csv')
+pd.DataFrame(dataOut).to_csv('psuData\\readings' + str(testStartTime).replace(':', '-') + '.csv')
