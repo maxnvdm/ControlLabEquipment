@@ -14,9 +14,12 @@ frequency = 5000
 # preset waveforms: sine, square, ramp, noise, DC, etc...
 waveform = "SINE"
 offset = 1.2
+# amplitude is the peak to peak voltage in volts
+amplitude = 0.02
 osc.write('AFG:FUNCtion ' + str(waveform))
 osc.write('AFG:FREQuency ' + str(frequency))
 osc.write('AFG:OFFSet ' + str(offset))
+osc.write('AFG:AMPLitude ' + str(amplitude))
 
 
 def record_duration(duration, arr):
