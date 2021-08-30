@@ -8,7 +8,7 @@ osc = rm.open_resource('TCPIP0::137.158.93.119::inst0::INSTR')
 
 # osc.write('DVM:SOUrce CH1')
 testStartTime = time.strftime("%H:%M:%S", time.localtime())
-data = np.array([('Timestamp', 'Ch1 reading', 'Ch2 reading', 'AFG frequency', 'AFG amplitude')])
+data = np.array([('Timestamp', 'Offset', 'Ch1 reading', 'Ch2 reading', 'AFG frequency', 'AFG amplitude')])
 
 frequency = 7000
 # preset waveforms: sine, square, ramp, noise, DC, etc...
@@ -43,7 +43,7 @@ def record_duration(duration, arr):
         # timestamp3 = time.time() + 2082844800
         # row3 = np.array([round(timestamp3, 2), 'Frequency', freq_read, 'Amplitude', amp_read])
 
-        row = np.array(round(timestamp1, 2), ch1, ch2, freq_read, amp_read)
+        row = np.array([round(timestamp1, 2), offset, ch1, ch2, freq_read, amp_read])
         arr = np.append(arr, [row], axis=0)
         print(arr)
         # time.sleep(0.2)
@@ -72,7 +72,7 @@ def loop_infinite(arr):
             #timestamp3 = time.time() + 2082844800
             #row3 = np.array([round(timestamp3, 2), 'Frequency', freq_read, 'Amplitude', amp_read])
 
-            row = np.array([round(timestamp1, 2), ch1, ch2, freq_read, amp_read])
+            row = np.array([round(timestamp1, 2), offset, ch1, ch2, freq_read, amp_read])
             arr = np.append(arr, [row], axis=0)
             print(arr)
     except KeyboardInterrupt:
