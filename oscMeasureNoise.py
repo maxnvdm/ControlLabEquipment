@@ -13,9 +13,9 @@ data = np.array([('Timestamp', 'Offset', 'Ch1 reading', 'Ch2 reading', 'AFG freq
 # hf range: 10000 - 400000 step 1000
 # mid range: 1000 - 10000 step 100
 # lf range: 1 - 1000 step 10
-freq_low = 1000
-freq_high = 10000
-freq_step = 100
+freq_low = 1
+freq_high = 1000
+freq_step = 10
 # preset waveforms: sine, square, ramp, noise, DC, etc...
 waveform = "SINE"
 offset = 1.2
@@ -34,7 +34,7 @@ def sweep_frequency(freq_start, freq_end, freq_step, arr):
         time.sleep(1.25)
         timestamp1 = time.time() + 2082844800
         ch1 = float(osc.query('DVM:MEASU:VAL?'))
-        
+
         if ch1 >= 1.29:
                 osc.write('AFG:OFFSet ' + str(1))
                 print("Voltage reached 1.29, test reset to safe levels")
