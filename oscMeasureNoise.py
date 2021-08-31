@@ -10,10 +10,12 @@ osc = rm.open_resource('TCPIP0::137.158.93.119::inst0::INSTR')
 testStartTime = time.strftime("%H:%M:%S", time.localtime())
 data = np.array([('Timestamp', 'Offset', 'Ch1 reading', 'Ch2 reading', 'AFG frequency', 'AFG amplitude')])
 
-# frequency = 5000
-freq_low = 10000
-freq_high = 400000
-freq_step = 1000
+# hf range: 10000 - 400000 step 1000
+# mid range: 1000 - 10000 step 100
+# lf range: 1 - 1000 step 10
+freq_low = 1000
+freq_high = 10000
+freq_step = 100
 # preset waveforms: sine, square, ramp, noise, DC, etc...
 waveform = "SINE"
 offset = 1.2
@@ -32,6 +34,11 @@ def sweep_frequency(freq_start, freq_end, freq_step, arr):
         time.sleep(1.25)
         timestamp1 = time.time() + 2082844800
         ch1 = float(osc.query('DVM:MEASU:VAL?'))
+        
+        if ch1 >= 1.29:
+                osc.write('AFG:OFFSet ' + str(1))
+                print("Voltage reached 1.29, test reset to safe levels")
+                return arr
 
         osc.write('DVM:SOUrce CH3')
         time.sleep(1.25)
@@ -43,6 +50,7 @@ def sweep_frequency(freq_start, freq_end, freq_step, arr):
         row = np.array([round(timestamp1, 2), offset, ch1, ch2, freq_read, amp_read])
         arr = np.append(arr, [row], axis=0)
         print(arr)
+
         osc.write('AFG:FREQuency ' + str(freq))
     return arr
 
@@ -72,6 +80,10 @@ def loop_infinite(arr):
             row = np.array([round(timestamp1, 2), offset, ch1, ch2, freq_read, amp_read])
             arr = np.append(arr, [row], axis=0)
             print(arr)
+            if ch1 >= 1.29:
+                osc.write('AFG:OFFSet ' + str(1))
+                print("Voltage reached 1.29, test reset to safe levels")
+                return arr
     except KeyboardInterrupt:
         return arr
 
