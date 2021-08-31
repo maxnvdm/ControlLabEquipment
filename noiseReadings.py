@@ -18,7 +18,7 @@ psu = rm.open_resource('ASRL4::INSTR')
 psu.read_termination = '\n'
 psu.write_termination = '\n'
 psu.baud_rate = 115200
-psu.write(':SOURce1:VOLTage ' + str(voltage))
+# psu.write(':SOURce1:VOLTage ' + str(voltage))
 
 duration = 5
 
