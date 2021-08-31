@@ -21,10 +21,10 @@ waveform = "SINE"
 offset = 1.2
 # amplitude is the peak to peak voltage in volts
 amplitude = 0.02
-osc.write('AFG:FUNCtion ' + str(waveform))
-osc.write('AFG:FREQuency ' + str(freq_low))
-osc.write('AFG:OFFSet ' + str(offset))
-osc.write('AFG:AMPLitude ' + str(amplitude))
+# osc.write('AFG:FUNCtion ' + str(waveform))
+# osc.write('AFG:FREQuency ' + str(freq_low))
+# osc.write('AFG:OFFSet ' + str(offset))
+# osc.write('AFG:AMPLitude ' + str(amplitude))
 
 
 def sweep_frequency(freq_start, freq_end, freq_step, arr):
@@ -58,14 +58,14 @@ def sweep_frequency(freq_start, freq_end, freq_step, arr):
 def loop_infinite(arr):
     try:
         while True:
-            osc.write('DVM:SOUrce CH3')
+            osc.write('DVM:SOUrce CH1')
             time.sleep(1.25)
             timestamp1 = time.time() + 2082844800
             ch1 = float(osc.query('DVM:MEASU:VAL?'))
             # row1 = np.array([round(timestamp1, 2), 'CH1', ch1])
 
             # time.sleep(0.3)
-            osc.write('DVM:SOUrce CH3')
+            osc.write('DVM:SOUrce CH2')
             time.sleep(1.25)
             # timestamp2 = time.time() + 2082844800
             ch2 = float(osc.query('DVM:MEASU:VAL?'))
@@ -88,7 +88,7 @@ def loop_infinite(arr):
         return arr
 
 
-# dataRecord = recordDuration(5, data)
-dataRecord = sweep_frequency(freq_low, freq_high, freq_step, data)
+dataRecord = loop_infinite(data)
+# dataRecord = sweep_frequency(freq_low, freq_high, freq_step, data)
 pd.DataFrame(dataRecord).to_csv('oscData\\oscilloscope' + str(offset) + str(waveform) + 'start' + str(freq_low) + 'end'
                                 + str(freq_high) + 'time' + str(testStartTime).replace(':', '-') + '.csv')
