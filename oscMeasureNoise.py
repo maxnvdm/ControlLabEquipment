@@ -77,6 +77,6 @@ def loop_infinite(arr):
 
 
 # dataRecord = recordDuration(5, data)
-dataRecord = sweep_frequency(data)
+dataRecord = sweep_frequency(freq_low, freq_high, freq_step, data)
 pd.DataFrame(dataRecord).to_csv('oscData\\oscilloscope' + str(offset) + str(waveform) + 'start' + str(freq_low) + 'end'
                                 + str(freq_high) + 'time' + str(testStartTime).replace(':', '-') + '.csv')
