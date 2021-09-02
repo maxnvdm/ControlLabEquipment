@@ -17,7 +17,7 @@ freq_low = 1
 freq_high = 1000
 freq_step = 10
 # preset waveforms: sine, square, ramp, noise, DC, etc...
-waveform = "SINE"
+waveform = "DC"
 offset = 1.2
 # amplitude is the peak to peak voltage in volts
 amplitude = 0.02
@@ -63,7 +63,10 @@ def loop_infinite(arr):
             timestamp1 = time.time() + 2082844800
             ch1 = float(osc.query('DVM:MEASU:VAL?'))
             # row1 = np.array([round(timestamp1, 2), 'CH1', ch1])
-
+            if ch1 >= 1.29:
+                osc.write('AFG:OFFSet ' + str(1))
+                print("Voltage reached 1.29, test reset to safe levels")
+                return arr
             # time.sleep(0.3)
             osc.write('DVM:SOUrce CH2')
             time.sleep(1.25)
@@ -71,19 +74,18 @@ def loop_infinite(arr):
             ch2 = float(osc.query('DVM:MEASU:VAL?'))
             # row2 = np.array([round(timestamp2, 2), 'CH2', ch2])
 
-            freq_read = float(osc.query('AFG:FREQuency?'))
+            # freq_read = float(osc.query('AFG:FREQuency?'))
+            freq_read = "DC"
             # time.sleep(1.5)
-            amp_read = float(osc.query('AFG:AMPLitude?'))
+            # amp_read = float(osc.query('AFG:AMPLitude?'))
+            amp_read = "DC"
             # timestamp3 = time.time() + 2082844800
             # row3 = np.array([round(timestamp3, 2), 'Frequency', freq_read, 'Amplitude', amp_read])
 
             row = np.array([round(timestamp1, 2), offset, ch1, ch2, freq_read, amp_read])
             arr = np.append(arr, [row], axis=0)
             print(arr)
-            if ch1 >= 1.29:
-                osc.write('AFG:OFFSet ' + str(1))
-                print("Voltage reached 1.29, test reset to safe levels")
-                return arr
+            
     except KeyboardInterrupt:
         return arr
 
