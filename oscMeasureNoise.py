@@ -16,31 +16,35 @@ data = np.array([('Timestamp', 'Offset', 'Ch1 reading', 'Ch2 reading', 'AFG freq
 freq_low = 1
 freq_high = 1000
 freq_step = 10
+
+dc_start = 1.135
+dc_end = 1.165
+dc_step = 0.005
 # preset waveforms: sine, square, ramp, noise, DC, etc...
 waveform = "DC"
-offset = 1.2
+offset = dc_start
 # amplitude is the peak to peak voltage in volts
 amplitude = 0.02
-# osc.write('AFG:FUNCtion ' + str(waveform))
+osc.write('AFG:FUNCtion ' + str(waveform))
 # osc.write('AFG:FREQuency ' + str(freq_low))
-# osc.write('AFG:OFFSet ' + str(offset))
+osc.write('AFG:OFFSet ' + str(offset))
 # osc.write('AFG:AMPLitude ' + str(amplitude))
 
 
 def sweep_frequency(freq_start, freq_end, freq_step, arr):
     frequencies = [f for f in np.arange(freq_start, freq_end, freq_step)]
     for freq in frequencies:
-        osc.write('DVM:SOUrce CH3')
+        osc.write('DVM:SOUrce CH1')
         time.sleep(1.25)
         timestamp1 = time.time() + 2082844800
         ch1 = float(osc.query('DVM:MEASU:VAL?'))
 
         if ch1 >= 1.29:
-                osc.write('AFG:OFFSet ' + str(1))
-                print("Voltage reached 1.29, test reset to safe levels")
-                return arr
+            osc.write('AFG:OFFSet ' + str(1))
+            print("Voltage reached 1.29, test reset to safe levels")
+            return arr
 
-        osc.write('DVM:SOUrce CH3')
+        osc.write('DVM:SOUrce CH2')
         time.sleep(1.25)
         ch2 = float(osc.query('DVM:MEASU:VAL?'))
 
@@ -54,6 +58,41 @@ def sweep_frequency(freq_start, freq_end, freq_step, arr):
         osc.write('AFG:FREQuency ' + str(freq))
     return arr
 
+def sweep_dc(dc_start, dc_end, dc_step, arr):
+    print("Starting DC sweep test")
+    voltages = [round(volt,3) for volt in np.arange(dc_start, dc_end, dc_step)]
+    for v in voltages:
+        testRunTime = 0
+        input("Stop previous BERT test and restart. Press any key to continue")
+        testStart = time.time()
+        while testRunTime < 120:
+            print(v)
+            if v > 1.3:
+                return arr
+            osc.write('AFG:OFFSet ' + str(v))
+
+            osc.write('DVM:SOUrce CH1')
+            time.sleep(1.25)
+            timestamp1 = time.time() + 2082844800
+            ch1 = float(osc.query('DVM:MEASU:VAL?'))
+
+            if ch1 >= 1.29:
+                osc.write('AFG:OFFSet ' + str(1))
+                print("Voltage reached 1.29, test reset to safe levels")
+                return arr
+
+            osc.write('DVM:SOUrce CH2')
+            time.sleep(1.25)
+            ch2 = float(osc.query('DVM:MEASU:VAL?'))
+
+            freq_read = "DC"
+            amp_read = "DC"
+
+            row = np.array([round(timestamp1, 2), offset, ch1, ch2, freq_read, amp_read])
+            arr = np.append(arr, [row], axis=0)
+            print(arr)
+            testRunTime = time.time() - testStart
+    return arr
 
 def loop_infinite(arr):
     try:
@@ -90,7 +129,8 @@ def loop_infinite(arr):
         return arr
 
 
-dataRecord = loop_infinite(data)
+# dataRecord = loop_infinite(data)
 # dataRecord = sweep_frequency(freq_low, freq_high, freq_step, data)
+dataRecord = sweep_dc(dc_start, dc_end, dc_step, data)
 pd.DataFrame(dataRecord).to_csv('oscData\\oscilloscope' + str(offset) + str(waveform) + 'start' + str(freq_low) + 'end'
                                 + str(freq_high) + 'time' + str(testStartTime).replace(':', '-') + '.csv')
