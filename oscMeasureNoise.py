@@ -17,12 +17,21 @@ freq_low = 1
 freq_high = 1000
 freq_step = 10
 
-dc_start = 1.135
-dc_end = 1.165
+# 1.2V DC sweep
+# dc_start = 1.135
+# dc_end = 1.165
+# dc_step = 0.005
+
+# 2.5V DC sweep
+dc_start = 1.95
+dc_end = 2.01
 dc_step = 0.005
 # preset waveforms: sine, square, ramp, noise, DC, etc...
 waveform = "DC"
 offset = dc_start
+# waveform = "SINE"
+# offset = 1.21
+
 # amplitude is the peak to peak voltage in volts
 amplitude = 0.02
 osc.write('AFG:FUNCtion ' + str(waveform))
@@ -44,6 +53,11 @@ def sweep_frequency(freq_start, freq_end, freq_step, arr):
             print("Voltage reached 1.29, test reset to safe levels")
             return arr
 
+        if ch2 >= 2.71:
+            osc.write('AFG:OFFSet ' + str(2.1))
+            print("Voltage reached 2.71, test reset to safe levels")
+            return arr
+
         osc.write('DVM:SOUrce CH2')
         time.sleep(1.25)
         ch2 = float(osc.query('DVM:MEASU:VAL?'))
@@ -63,13 +77,14 @@ def sweep_dc(dc_start, dc_end, dc_step, arr):
     voltages = [round(volt,3) for volt in np.arange(dc_start, dc_end, dc_step)]
     for v in voltages:
         testRunTime = 0
+        print(v)
         input("Stop previous BERT test and restart. Press any key to continue")
+        osc.write('AFG:OFFSet ' + str(v))
         testStart = time.time()
         while testRunTime < 120:
             print(v)
-            if v > 1.3:
+            if v > 2.68: #1.3 for 1.2V line, 2.68V for 2.5V line
                 return arr
-            osc.write('AFG:OFFSet ' + str(v))
 
             osc.write('DVM:SOUrce CH1')
             time.sleep(1.25)
@@ -84,6 +99,11 @@ def sweep_dc(dc_start, dc_end, dc_step, arr):
             osc.write('DVM:SOUrce CH2')
             time.sleep(1.25)
             ch2 = float(osc.query('DVM:MEASU:VAL?'))
+
+            if ch2 >= 2.71:
+                osc.write('AFG:OFFSet ' + str(2.1))
+                print("Voltage reached 2.71, test reset to safe levels")
+                return arr
 
             freq_read = "DC"
             amp_read = "DC"
