@@ -72,7 +72,6 @@ def loop_reading(arr):
 # lpgbt 1.027 to 1.036 DESY
 # manual max is 1.32, min is 1.08
 dataOut = loop_reading(data)
-# dataOut = loopReading(data)
 # # Write data to csv file
 # with open('lpGBTtest0.csv', mode='w') as test_file:
 #     writer = csv.writer(test_file, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
