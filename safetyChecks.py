@@ -24,3 +24,4 @@ def offset_check2_5(offset):
         raise Exception(f'Offset value is unsafe <{offset}>, maximum is 2.35')
     else:
         return offset
+
