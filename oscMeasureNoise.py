@@ -10,7 +10,7 @@ osc = rm.open_resource('TCPIP0::137.158.93.119::inst0::INSTR')
 testStartTime = time.strftime("%H:%M:%S", time.localtime())
 data = np.array([('Timestamp', 'Offset', 'Ch1 reading', 'Ch2 reading', 'AFG frequency', 'AFG amplitude')])
 
-# hf range: 10000 - 400000 step 1000
+# hf range: 10000 - 300000 step 1000
 # mid range: 1000 - 10000 step 100
 # lf range: 1 - 1000 step 10
 freq_low = 1
@@ -24,8 +24,8 @@ freq_step = 10
 
 # 2.5V DC sweep
 dc_start = 1.95
-dc_end = 2.01
-dc_step = 0.005
+dc_end = 2.02 #2.01
+dc_step = 0.01 #0.005
 # preset waveforms: sine, square, ramp, noise, DC, etc...
 waveform = "DC"
 offset = dc_start
