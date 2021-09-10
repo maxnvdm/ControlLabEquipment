@@ -7,7 +7,7 @@ import pandas as pd
 # inital params
 data = np.array([("time[s]", "Voltage CH1", "Voltage CH2", "Current CH1", "Current CH2", "Power CH1", "Power CH2")])
 testStartTime = time.strftime("%H:%M:%S", time.localtime())
-voltage = 15
+# voltage = 15
 
 # Create the resource manager
 rm = pyvisa.ResourceManager()
