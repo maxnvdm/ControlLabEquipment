@@ -51,7 +51,7 @@ osc.write('AFG:AMPLitude ' + str(amplitude))
 osc.write('AFG:OUTPut:STATE ON')
 
 testStartTime = time.strftime("%H:%M:%S", time.localtime())
-data = np.array([('Timestamp start', 'Timestamp end' 'Offset', 'Ch1 reading', 'Ch2 reading', 'AFG frequency',
+data = np.array([('Timestamp start', 'Timestamp end', 'Offset', 'Ch1 reading', 'Ch2 reading', 'AFG frequency',
                   'AFG amplitude', 'maximum1', 'maximum2', 'minimum1', 'minimum2', 'mean1', 'mean2', 'pkpk1', 'pkpk2')])
 
 
@@ -63,10 +63,10 @@ def sweep_frequency(waves_line, frequencies, arr, line):
 
         if line == 1:
             wave_offset = safetyChecks.offset_check1_2(waves_line[wave]["offset"])
-            wave_amplitude = safetyChecks.amplitude_check1_2(waves_line[wave]["offset"])
+            wave_amplitude = safetyChecks.amplitude_check1_2(waves_line[wave]["amplitude"])
         elif line == 2:
             wave_offset = safetyChecks.offset_check2_5(waves_line[wave]["offset"])
-            wave_amplitude = safetyChecks.amplitude_check2_5(waves_line[wave]["offset"])
+            wave_amplitude = safetyChecks.amplitude_check2_5(waves_line[wave]["amplitude"])
 
         osc.write('AFG:OFFSet ' + str(wave_offset))
         osc.write('AFG:AMPLitude ' + str(wave_amplitude))
@@ -109,8 +109,8 @@ def sweep_frequency(waves_line, frequencies, arr, line):
         elif line == 2:
             wave_offset = safetyChecks.safe_values2_5["offset"]
             wave_amplitude = safetyChecks.safe_values2_5["amplitude"]
-        osc.write('AFG:OFFSet ' + str(wave_offset))
         osc.write('AFG:AMPLitude ' + str(wave_amplitude))
+        osc.write('AFG:OFFSet ' + str(wave_offset))
     return arr
 
 
@@ -169,6 +169,6 @@ def test_settings(waveforms, arr):
 
 
 # config_settings = test_settings(waveforms, data)
-dataRecord = sweep_frequency(waves_line, data, line)
+dataRecord = sweep_frequency(waves_line, all_frequencies, data, line)
 pd.DataFrame(dataRecord).to_csv('oscData\\oscilloscopeFrequencySweep' + str(line) + str(testStartTime).replace(':', '-') + '.csv')
 # pd.DataFrame(config_settings).to_csv('oscData\\testSettings' + str(testStartTime).replace(':', '-') + '.csv')

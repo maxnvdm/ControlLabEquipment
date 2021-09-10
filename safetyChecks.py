@@ -42,7 +42,7 @@ def measurements(osc):
     return [maximum1, maximum2, minimum1, minimum2, mean1, mean2, pkpk1, pkpk2]
 
 
-safe_values1_2 = {"offset": 1.17,
+safe_values1_2 = {"offset": 1.14,
                   "amplitude": 0.03,
                   "frequency": 1}
 safe_values2_5 = {"offset": 2.15,
